@@ -1,0 +1,13 @@
+<resources>
+  <string name="app_name">Photo Discovery</string>
+  <string name="action_settings">Settings</string>
+
+  <string name="no_connection">No internet connection!</string>
+
+  <string name="input">What do you want to discover?</string>
+  <string name="input_hint">eg: egypt, food, fun, etc..</string>
+  <string name="input_pre_fill"></string>
+  <string name="input_content">Enter any keys (comma separated)</string>
+  <string name="title_activity_main2">Main2Activity</string>
+
+</resources>
