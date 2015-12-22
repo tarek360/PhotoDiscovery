@@ -1,10 +1,8 @@
 package com.tarek.photodiscovery.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,19 +18,21 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.tarek.photodiscovery.App;
 import com.tarek.photodiscovery.R;
 import com.tarek.photodiscovery.adapters.EndlessRecyclerOnScrollListener;
 import com.tarek.photodiscovery.adapters.GalleryRecyclerViewAdapter;
 import com.tarek.photodiscovery.adapters.RecyclerItemClickListener;
 import com.tarek.photodiscovery.models.Photo;
 import com.tarek.photodiscovery.utils.CheckNetworkConnection;
+import com.tarek.photodiscovery.utils.StorageHelper;
 import java.util.ArrayList;
+import javax.inject.Inject;
 import org.parceler.Parcels;
 
 public class MainActivity extends AppCompatActivity {
 
   private static final String LIST_STATE_KEY = "listState";
-  private static final String PREF_KEY_KEYWORDS = "keywords";
   private static final String PHOTO_LIST = "photoList";
 
   private static final int PHOTO_AMOUNT = 20;
@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
   @Bind(R.id.galleryRecyclerView) RecyclerView mRecyclerView;
   @Bind(R.id.toolbar) Toolbar toolbar;
   @Bind(R.id.fab) FloatingActionButton fab;
+
+  @Inject StorageHelper mStorageHelper;
 
   private GalleryRecyclerViewAdapter mGalleryRecyclerViewAdapter;
   private StaggeredGridLayoutManager mLayoutManager;
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
+
+    ((App) getApplication()).getStorageComponent().inject(this);
 
     setSupportActionBar(toolbar);
 
@@ -229,18 +233,16 @@ public class MainActivity extends AppCompatActivity {
         .show();
   }
 
-  private String getPrefKeyWords() {
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-    return sharedPreferences.getString(PREF_KEY_KEYWORDS, "");
-  }
-
-  private void setPrefKeyWords(String keyWords) {
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-    sharedPreferences.edit().putString(PREF_KEY_KEYWORDS, keyWords).apply();
-  }
+  //private String getPrefKeyWords() {
+  //  return mSharedPreferences.getString(PREF_KEY_KEYWORDS, "");
+  //}
+  //
+  //private void setPrefKeyWords(String keyWords) {
+  //  mSharedPreferences.edit().putString(PREF_KEY_KEYWORDS, keyWords).apply();
+  //}
 
   private void loadPhotoByKeyWordsFromPref() {
-    keyWords = getPrefKeyWords();
+    keyWords = mStorageHelper.getPrefKeyWords();
     if (!TextUtils.isEmpty(keyWords)) {
       loadPhotosByAmount(PHOTO_AMOUNT);
     } else {
@@ -250,8 +252,8 @@ public class MainActivity extends AppCompatActivity {
 
   private void loadPhotoByKeyWordsFromUserInput(String keyWords) {
 
-    if (!getPrefKeyWords().equalsIgnoreCase(keyWords)) {
-      setPrefKeyWords(keyWords);
+    if (!mStorageHelper.getPrefKeyWords().equalsIgnoreCase(keyWords)) {
+      mStorageHelper.setPrefKeyWords(keyWords);
       this.keyWords = keyWords;
 
       if (!TextUtils.isEmpty(keyWords)) {

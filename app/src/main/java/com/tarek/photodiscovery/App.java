@@ -7,6 +7,10 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Response;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
+import com.tarek.photodiscovery.di.component.DaggerStorageComponent;
+import com.tarek.photodiscovery.di.component.StorageComponent;
+import com.tarek.photodiscovery.di.modules.AppModule;
+import com.tarek.photodiscovery.di.modules.StorageModule;
 import java.io.File;
 import java.io.IOException;
 
@@ -15,8 +19,16 @@ import java.io.IOException;
  */
 public class App extends Application {
 
+  StorageComponent storageComponent;
+
   @Override public void onCreate() {
     super.onCreate();
+
+
+    storageComponent = DaggerStorageComponent.builder()
+        .appModule(new AppModule(this))
+        .storageModule(new StorageModule())
+        .build();
 
     initPicasso();
   }
@@ -47,5 +59,9 @@ public class App extends Application {
     //picasso.setIndicatorsEnabled(true);
     //picasso.setLoggingEnabled(true);
     Picasso.setSingletonInstance(picasso);
+  }
+
+  public StorageComponent getStorageComponent() {
+    return storageComponent;
   }
 }
