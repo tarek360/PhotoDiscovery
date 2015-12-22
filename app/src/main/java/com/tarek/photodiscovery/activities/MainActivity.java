@@ -1,5 +1,6 @@
 package com.tarek.photodiscovery.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -15,10 +16,14 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tarek.photodiscovery.R;
 import com.tarek.photodiscovery.adapters.EndlessRecyclerOnScrollListener;
 import com.tarek.photodiscovery.adapters.GalleryRecyclerViewAdapter;
+import com.tarek.photodiscovery.adapters.RecyclerItemClickListener;
 import com.tarek.photodiscovery.models.Photo;
 import com.tarek.photodiscovery.utils.CheckNetworkConnection;
 import java.util.ArrayList;
@@ -32,9 +37,12 @@ public class MainActivity extends AppCompatActivity {
   private static final int PHOTO_AMOUNT = 20;
   private static final String PREF_KEY_KEYWORDS = "keywords";
 
-  private CoordinatorLayout coordinatorLayout;
-  private RecyclerView mRecyclerView;
-  private RecyclerView.Adapter mGalleryRecyclerViewAdapter;
+  @Bind(R.id.coordinatorLayout) CoordinatorLayout coordinatorLayout;
+  @Bind(R.id.galleryRecyclerView) RecyclerView mRecyclerView;
+  @Bind(R.id.toolbar) Toolbar toolbar;
+  @Bind(R.id.fab) FloatingActionButton fab;
+
+  private GalleryRecyclerViewAdapter mGalleryRecyclerViewAdapter;
   private StaggeredGridLayoutManager mLayoutManager;
 
   private int mSpanCount;
@@ -48,8 +56,9 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.activity_main);
+    ButterKnife.bind(this);
 
-    initViews();
+    setSupportActionBar(toolbar);
 
     if (!CheckNetworkConnection.isConnectionAvailable(getApplicationContext())) {
       showSnackBarWithStringResource(R.string.no_connection);
@@ -93,47 +102,36 @@ public class MainActivity extends AppCompatActivity {
      * Listen to clicking on mRecyclerView items to open
      * new activity with the clicked photo in full screen
      */
-    //mRecyclerView.addOnItemTouchListener(
-    //    new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
-    //      @Override public void onItemClick(View view, int position) {
-    //        Intent intent = DetailActivity.buildIntent(MainActivity.this, photoList, position);
-    //        MainActivity.this.startActivity(intent);
-    //      }
-    //    }));
+    mRecyclerView.addOnItemTouchListener(
+        new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+          @Override public void onItemClick(View view, int position) {
+            Intent intent = DetailActivity.buildIntent(MainActivity.this, photoList, position);
+            MainActivity.this.startActivity(intent);
+          }
+        }));
 
     /**
      * Listen to mRecyclerView Scrolling to load more photos
      */
     mRecyclerView.addOnScrollListener(
         new EndlessRecyclerOnScrollListener(mLayoutManager, mSpanCount) {
-          @Override public void onScroll() {
+          @Override public void onLoadMore(int page, int totalItemsCount) {
             // If connection available load photos by amount
             if (CheckNetworkConnection.isConnectionAvailable(getApplicationContext())) {
               loadPhotosByAmount(PHOTO_AMOUNT);
               mGalleryRecyclerViewAdapter.notifyItemRangeChanged(photoList.size(), PHOTO_AMOUNT);
               // Set it to true to prevent more onScroll calling till new photos is loaded.
-              this.loading = true;
+              //this.loading = true;
             } else {
               // Set it to false to receive more onScroll calling.
-              this.loading = false;
+              //this.loading = false;
             }
           }
         });
   }
 
-  private void initViews() {
-    coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
-    mRecyclerView = (RecyclerView) findViewById(R.id.galleryRecyclerView);
-
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-    setSupportActionBar(toolbar);
-
-    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-    fab.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View view) {
-        showInputDialog();
-      }
-    });
+  @OnClick(R.id.fab) void onClickFAB() {
+    showInputDialog();
   }
 
   /**
@@ -183,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
     randomURL.append(height);
     randomURL.append("/");
     randomURL.append(keyWords);
+    randomURL.append("/all");
 
     return new Photo(randomURL.toString(), width, height);
   }
@@ -259,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
         photoList.clear();
         loadPhotosByAmount(PHOTO_AMOUNT);
         mGalleryRecyclerViewAdapter.notifyDataSetChanged();
+        mLayoutManager.scrollToPosition(0);
       } else {
         showInputDialog();
       }
@@ -267,9 +267,9 @@ public class MainActivity extends AppCompatActivity {
 
   private void validateKeywords(String text) {
     StringBuffer urlKeys = new StringBuffer();
-    String[] keyWords = text.trim().split(",");
+    String[] keyWords = text.trim().split(" ");
     for (String keyword : keyWords) {
-      urlKeys.append(keyword.trim());
+      urlKeys.append(keyword);
       urlKeys.append(",");
     }
 

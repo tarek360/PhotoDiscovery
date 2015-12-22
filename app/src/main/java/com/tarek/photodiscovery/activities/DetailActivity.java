@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+import android.util.Log;
 import java.util.ArrayList;
 
 import org.parceler.Parcels;
@@ -46,7 +47,7 @@ public class DetailActivity extends AppCompatActivity {
         int position = getIntent().getIntExtra(EXTRA_CURRENT_POSITION, 0);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mGalleryPagerAdapter = new GalleryPagerAdapter(getFragmentManager(), photoList);
+        mGalleryPagerAdapter = new GalleryPagerAdapter(getSupportFragmentManager(), photoList);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -60,6 +61,8 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(EXTRA_GALLERY_PARCEL, Parcels.wrap(photoList));
         intent.putExtra(EXTRA_CURRENT_POSITION, position);
+      Log.d(DetailActivity.class.getSimpleName(),
+          " photo.getUrl() " + photoList.get(position).getUrl());
 
         return intent;
     }
