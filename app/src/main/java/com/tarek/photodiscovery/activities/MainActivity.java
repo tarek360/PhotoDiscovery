@@ -32,10 +32,10 @@ import org.parceler.Parcels;
 public class MainActivity extends AppCompatActivity {
 
   private static final String LIST_STATE_KEY = "listState";
+  private static final String PREF_KEY_KEYWORDS = "keywords";
   private static final String PHOTO_LIST = "photoList";
 
   private static final int PHOTO_AMOUNT = 20;
-  private static final String PREF_KEY_KEYWORDS = "keywords";
 
   @Bind(R.id.coordinatorLayout) CoordinatorLayout coordinatorLayout;
   @Bind(R.id.galleryRecyclerView) RecyclerView mRecyclerView;
