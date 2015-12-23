@@ -1,6 +1,7 @@
 package com.tarek.photodiscovery.di.modules;
 
 import com.tarek.photodiscovery.App;
+import com.tarek.photodiscovery.navigation.Navigator;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -18,5 +19,9 @@ import javax.inject.Singleton;
 
   @Singleton @Provides public App providesApp() {
     return app;
+  }
+
+  @Singleton @Provides public Navigator providesNavigator() {
+    return new Navigator();
   }
 }

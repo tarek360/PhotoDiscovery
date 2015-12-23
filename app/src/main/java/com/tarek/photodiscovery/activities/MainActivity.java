@@ -1,6 +1,5 @@
 package com.tarek.photodiscovery.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
@@ -24,7 +23,10 @@ import com.tarek.photodiscovery.adapters.EndlessRecyclerOnScrollListener;
 import com.tarek.photodiscovery.adapters.GalleryRecyclerViewAdapter;
 import com.tarek.photodiscovery.adapters.RecyclerItemClickListener;
 import com.tarek.photodiscovery.models.Photo;
+import com.tarek.photodiscovery.navigation.Navigator;
 import com.tarek.photodiscovery.utils.CheckNetworkConnection;
+import com.tarek.photodiscovery.utils.KeywordsUtil;
+import com.tarek.photodiscovery.utils.PhotoUtil;
 import com.tarek.photodiscovery.utils.StorageHelper;
 import java.util.ArrayList;
 import javax.inject.Inject;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
   @Bind(R.id.fab) FloatingActionButton fab;
 
   @Inject StorageHelper mStorageHelper;
+  @Inject Navigator mNavigator;
 
   private GalleryRecyclerViewAdapter mGalleryRecyclerViewAdapter;
   private StaggeredGridLayoutManager mLayoutManager;
@@ -109,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
     mRecyclerView.addOnItemTouchListener(
         new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
           @Override public void onItemClick(View view, int position) {
-            Intent intent = DetailActivity.buildIntent(MainActivity.this, photoList, position);
-            MainActivity.this.startActivity(intent);
+            mNavigator.navigateToPhotoDetail(MainActivity.this, photoList, position);
           }
         }));
 
@@ -124,11 +126,6 @@ public class MainActivity extends AppCompatActivity {
             if (CheckNetworkConnection.isConnectionAvailable(getApplicationContext())) {
               loadPhotosByAmount(PHOTO_AMOUNT);
               mGalleryRecyclerViewAdapter.notifyItemRangeChanged(photoList.size(), PHOTO_AMOUNT);
-              // Set it to true to prevent more onScroll calling till new photos is loaded.
-              //this.loading = true;
-            } else {
-              // Set it to false to receive more onScroll calling.
-              //this.loading = false;
             }
           }
         });
@@ -146,54 +143,15 @@ public class MainActivity extends AppCompatActivity {
   private void loadPhotosByAmount(int amount) {
 
     for (int i = 0; i < amount; i++) {
-      photoList.add(getRandomPhoto());
+      photoList.add(PhotoUtil.getRandomPhoto(keyWords));
     }
-  }
-
-  // Initial photo width & height
-  private int width = 400;
-  private int height = 550;
-
-  // int variable is used to increment photo height by one pixel.
-  private int step;
-
-  /**
-   * Returns Random Photo with every call.
-   * Max unique photo url is 151
-   *
-   * @return Photo.
-   */
-  private Photo getRandomPhoto() {
-
-    //StringBuffer randomURL = new StringBuffer("http://lorempixel.com/");
-    StringBuffer randomURL = new StringBuffer("http://loremflickr.com/");
-
-    // Set it to start
-    if (step == 49) {
-      step = 0;
-    }
-
-    if (height > 700) {
-      step++;
-      height = 600 + step;
-    } else {
-      height += 50;
-    }
-
-    randomURL.append(width);
-    randomURL.append("/");
-    randomURL.append(height);
-    randomURL.append("/");
-    randomURL.append(keyWords);
-    randomURL.append("/all");
-
-    return new Photo(randomURL.toString(), width, height);
   }
 
   @Override protected void onResume() {
     super.onResume();
 
     if (mListState != null) {
+      //Restore RecyclerView state - position
       mLayoutManager.onRestoreInstanceState(mListState);
     }
   }
@@ -227,19 +185,12 @@ public class MainActivity extends AppCompatActivity {
         .inputType(InputType.TYPE_CLASS_TEXT)
         .input(R.string.input_hint, R.string.input_pre_fill, new MaterialDialog.InputCallback() {
           @Override public void onInput(MaterialDialog dialog, CharSequence input) {
-            validateKeywords(input.toString());
+            String keyWords = KeywordsUtil.getValidateKeywords(input.toString());
+            loadPhotoByKeyWordsFromUserInput(keyWords);
           }
         })
         .show();
   }
-
-  //private String getPrefKeyWords() {
-  //  return mSharedPreferences.getString(PREF_KEY_KEYWORDS, "");
-  //}
-  //
-  //private void setPrefKeyWords(String keyWords) {
-  //  mSharedPreferences.edit().putString(PREF_KEY_KEYWORDS, keyWords).apply();
-  //}
 
   private void loadPhotoByKeyWordsFromPref() {
     keyWords = mStorageHelper.getPrefKeyWords();
@@ -265,16 +216,5 @@ public class MainActivity extends AppCompatActivity {
         showInputDialog();
       }
     }
-  }
-
-  private void validateKeywords(String text) {
-    StringBuffer urlKeys = new StringBuffer();
-    String[] keyWords = text.trim().split(" ");
-    for (String keyword : keyWords) {
-      urlKeys.append(keyword);
-      urlKeys.append(",");
-    }
-
-    loadPhotoByKeyWordsFromUserInput(urlKeys.toString());
   }
 }
