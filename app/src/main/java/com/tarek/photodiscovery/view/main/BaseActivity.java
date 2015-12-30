@@ -1,4 +1,4 @@
-package com.tarek.photodiscovery.view.activities;
+package com.tarek.photodiscovery.view.main;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

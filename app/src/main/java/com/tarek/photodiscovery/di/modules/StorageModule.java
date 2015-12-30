@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.tarek.photodiscovery.App;
 import com.tarek.photodiscovery.utils.StorageHelper;
+import com.tarek.photodiscovery.utils.StorageHelperImpl;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Inject;
@@ -21,7 +22,7 @@ import javax.inject.Singleton;
 
   @Provides
   @Singleton StorageHelper provideStorageHelper(SharedPreferences sharedPreferences) {
-    return new StorageHelper(sharedPreferences);
+    return new StorageHelperImpl(sharedPreferences);
   }
 
 }

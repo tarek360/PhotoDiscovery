@@ -1,6 +1,6 @@
 package com.tarek.photodiscovery.di.component;
 
-import com.tarek.photodiscovery.view.activities.BaseActivity;
+import com.tarek.photodiscovery.view.main.BaseActivity;
 import com.tarek.photodiscovery.di.modules.StorageModule;
 import dagger.Component;
 import javax.inject.Singleton;

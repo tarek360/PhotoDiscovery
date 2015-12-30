@@ -1,4 +1,4 @@
-package com.tarek.photodiscovery.view.fragments;
+package com.tarek.photodiscovery.view.detail.fragments;
 
 import android.content.Context;
 import android.os.Bundle;

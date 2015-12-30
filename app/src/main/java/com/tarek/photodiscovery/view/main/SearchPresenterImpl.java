@@ -1,11 +1,29 @@
-package com.tarek.photodiscovery.utils;
+package com.tarek.photodiscovery.view.main;
 
 import com.tarek.photodiscovery.models.Photo;
 
 /**
- * Created by tarek on 12/23/15.
+ * Created by tarek on 12/30/15.
  */
-public class PhotoUtil {
+public class SearchPresenterImpl implements SearchPresenter {
+
+  @Override public String getValidateFormat(String text) {
+    StringBuilder urlKeys = new StringBuilder();
+    String[] keyWords = text.trim().split(" ");
+    for (int i = 0; i < keyWords.length; i++) {
+      urlKeys.append(keyWords[i]);
+      if (i != keyWords.length - 1) {
+        urlKeys.append(",");
+      }
+    }
+
+    return urlKeys.toString();
+  }
+
+  @Override public String restoreUserInputFormat(String text) {
+    return text.replace(',', ' ');
+  }
+
 
   // Initial photo width & height
   private static int width = 400;
@@ -20,7 +38,7 @@ public class PhotoUtil {
    *
    * @return Photo.
    */
-  public static Photo getRandomPhoto(String keyWords) {
+  @Override public Photo getRandomPhoto(String keyWords) {
 
     //StringBuilder randomURL = new StringBuilder("http://lorempixel.com/");
     StringBuilder randomURL = new StringBuilder("http://loremflickr.com/");

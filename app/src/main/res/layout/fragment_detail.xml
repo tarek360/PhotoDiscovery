@@ -5,5 +5,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:adjustViewBounds="true"
-    tools:context=".view.fragments.FullScreenImageFragment" />
+    tools:context=".view.detail.fragments.FullScreenImageFragment" />
 

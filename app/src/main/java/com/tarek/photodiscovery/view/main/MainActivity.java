@@ -1,4 +1,4 @@
-package com.tarek.photodiscovery.view.activities;
+package com.tarek.photodiscovery.view.main;
 
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -22,8 +22,6 @@ import com.tarek.photodiscovery.adapters.GalleryRecyclerViewAdapter;
 import com.tarek.photodiscovery.adapters.RecyclerItemClickListener;
 import com.tarek.photodiscovery.models.Photo;
 import com.tarek.photodiscovery.utils.CheckNetworkConnection;
-import com.tarek.photodiscovery.utils.KeywordsUtil;
-import com.tarek.photodiscovery.utils.PhotoUtil;
 import java.util.ArrayList;
 import org.parceler.Parcels;
 
@@ -49,6 +47,8 @@ public class MainActivity extends BaseActivity {
   private Parcelable mListState;
   private String keyWords;
 
+  private SearchPresenter presenter;
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
@@ -60,6 +60,8 @@ public class MainActivity extends BaseActivity {
     if (!CheckNetworkConnection.isConnectionAvailable(getApplicationContext())) {
       showSnackBarWithStringResource(R.string.no_connection);
     }
+
+    presenter = new SearchPresenterImpl();
 
     /** Load some photos by amount */
     if (savedInstanceState == null) {
@@ -133,7 +135,7 @@ public class MainActivity extends BaseActivity {
   private void loadPhotosByAmount(int amount) {
 
     for (int i = 0; i < amount; i++) {
-      photoList.add(PhotoUtil.getRandomPhoto(keyWords));
+      photoList.add(presenter.getRandomPhoto(keyWords));
     }
   }
 
@@ -173,13 +175,15 @@ public class MainActivity extends BaseActivity {
         .content(R.string.input_content)
         .inputRange(2, 32)
         .inputType(InputType.TYPE_CLASS_TEXT)
-        .input(getString(R.string.input_hint), KeywordsUtil.restoreUserInputFormat(keyWords),
+        .input(getString(R.string.input_hint), presenter.restoreUserInputFormat(keyWords),
             new MaterialDialog.InputCallback() {
               @Override public void onInput(MaterialDialog dialog, CharSequence input) {
-                String keyWords = KeywordsUtil.getValidateFormat(input.toString());
+                String keyWords = presenter.getValidateFormat(input.toString());
+
                 loadPhotoByKeyWordsFromUserInput(keyWords);
               }
-            }).show();
+            })
+        .show();
   }
 
   private void loadPhotoByKeyWordsFromPref() {
