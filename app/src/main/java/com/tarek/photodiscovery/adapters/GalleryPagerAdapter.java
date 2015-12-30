@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 
-import com.tarek.photodiscovery.fragments.FullScreenImageFragment;
+import com.tarek.photodiscovery.view.fragments.FullScreenImageFragment;
 import com.tarek.photodiscovery.models.Photo;
 
 

@@ -7,7 +7,7 @@ package com.tarek.photodiscovery.navigation;
 
 import android.content.Context;
 import android.content.Intent;
-import com.tarek.photodiscovery.activities.DetailActivity;
+import com.tarek.photodiscovery.view.activities.DetailActivity;
 import com.tarek.photodiscovery.models.Photo;
 import java.util.ArrayList;
 

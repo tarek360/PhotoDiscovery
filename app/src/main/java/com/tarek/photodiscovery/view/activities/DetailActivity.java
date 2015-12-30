@@ -1,4 +1,4 @@
-package com.tarek.photodiscovery.activities;
+package com.tarek.photodiscovery.view.activities;
 
 import android.content.Context;
 import android.content.Intent;

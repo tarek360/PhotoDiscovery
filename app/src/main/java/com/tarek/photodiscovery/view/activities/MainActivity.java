@@ -1,11 +1,10 @@
-package com.tarek.photodiscovery.activities;
+package com.tarek.photodiscovery.view.activities;
 
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -17,22 +16,18 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.tarek.photodiscovery.App;
 import com.tarek.photodiscovery.R;
 import com.tarek.photodiscovery.adapters.EndlessRecyclerOnScrollListener;
 import com.tarek.photodiscovery.adapters.GalleryRecyclerViewAdapter;
 import com.tarek.photodiscovery.adapters.RecyclerItemClickListener;
 import com.tarek.photodiscovery.models.Photo;
-import com.tarek.photodiscovery.navigation.Navigator;
 import com.tarek.photodiscovery.utils.CheckNetworkConnection;
 import com.tarek.photodiscovery.utils.KeywordsUtil;
 import com.tarek.photodiscovery.utils.PhotoUtil;
-import com.tarek.photodiscovery.utils.StorageHelper;
 import java.util.ArrayList;
-import javax.inject.Inject;
 import org.parceler.Parcels;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
   private static final String LIST_STATE_KEY = "listState";
   private static final String PHOTO_LIST = "photoList";
@@ -43,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
   @Bind(R.id.galleryRecyclerView) RecyclerView mRecyclerView;
   @Bind(R.id.toolbar) Toolbar toolbar;
   @Bind(R.id.fab) FloatingActionButton fab;
-
-  @Inject StorageHelper mStorageHelper;
-  @Inject Navigator mNavigator;
 
   private GalleryRecyclerViewAdapter mGalleryRecyclerViewAdapter;
   private StaggeredGridLayoutManager mLayoutManager;
@@ -62,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
-
-    ((App) getApplication()).getStorageComponent().inject(this);
 
     setSupportActionBar(toolbar);
 
@@ -183,21 +173,21 @@ public class MainActivity extends AppCompatActivity {
         .content(R.string.input_content)
         .inputRange(2, 32)
         .inputType(InputType.TYPE_CLASS_TEXT)
-        .input(R.string.input_hint, R.string.input_pre_fill, new MaterialDialog.InputCallback() {
-          @Override public void onInput(MaterialDialog dialog, CharSequence input) {
-            String keyWords = KeywordsUtil.getValidateKeywords(input.toString());
-            loadPhotoByKeyWordsFromUserInput(keyWords);
-          }
-        })
-        .show();
+        .input(getString(R.string.input_hint), KeywordsUtil.restoreUserInputFormat(keyWords),
+            new MaterialDialog.InputCallback() {
+              @Override public void onInput(MaterialDialog dialog, CharSequence input) {
+                String keyWords = KeywordsUtil.getValidateFormat(input.toString());
+                loadPhotoByKeyWordsFromUserInput(keyWords);
+              }
+            }).show();
   }
 
   private void loadPhotoByKeyWordsFromPref() {
     keyWords = mStorageHelper.getPrefKeyWords();
-    if (!TextUtils.isEmpty(keyWords)) {
-      loadPhotosByAmount(PHOTO_AMOUNT);
-    } else {
+    if (TextUtils.isEmpty(keyWords)) {
       showInputDialog();
+    } else {
+      loadPhotosByAmount(PHOTO_AMOUNT);
     }
   }
 
@@ -207,14 +197,10 @@ public class MainActivity extends AppCompatActivity {
       mStorageHelper.setPrefKeyWords(keyWords);
       this.keyWords = keyWords;
 
-      if (!TextUtils.isEmpty(keyWords)) {
-        photoList.clear();
-        loadPhotosByAmount(PHOTO_AMOUNT);
-        mGalleryRecyclerViewAdapter.notifyDataSetChanged();
-        mLayoutManager.scrollToPosition(0);
-      } else {
-        showInputDialog();
-      }
+      photoList.clear();
+      loadPhotosByAmount(PHOTO_AMOUNT);
+      mGalleryRecyclerViewAdapter.notifyDataSetChanged();
+      mLayoutManager.scrollToPosition(0);
     }
   }
 }

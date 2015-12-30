@@ -18,5 +18,6 @@ You can enter single keyword or multiple keywords.
 
 ## TODO:
 * Migrate to ButterKnife (Done)
-* Migrate to Dagger2 (InProgress)
+* Migrate to Dagger2 (Done)
+* Migrate to RxJava.
 * Migrate to MVP.
