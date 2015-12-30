@@ -22,8 +22,8 @@ public class PhotoUtil {
    */
   public static Photo getRandomPhoto(String keyWords) {
 
-    //StringBuffer randomURL = new StringBuffer("http://lorempixel.com/");
-    StringBuffer randomURL = new StringBuffer("http://loremflickr.com/");
+    //StringBuilder randomURL = new StringBuilder("http://lorempixel.com/");
+    StringBuilder randomURL = new StringBuilder("http://loremflickr.com/");
 
     // Set it to start
     if (step == 49) {

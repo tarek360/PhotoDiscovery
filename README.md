@@ -7,7 +7,7 @@
 
 ## Description
 
-Enter your key word(s) to get a lot of awesome photos.
+Enter your keyword(s) to get a lot of awesome photos.
 You can enter single keyword or multiple keywords.
 
 ## Notes:
