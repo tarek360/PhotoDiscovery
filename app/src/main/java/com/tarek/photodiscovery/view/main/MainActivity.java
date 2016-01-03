@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import butterknife.Bind;
@@ -25,12 +24,10 @@ import com.tarek.photodiscovery.utils.CheckNetworkConnection;
 import java.util.ArrayList;
 import org.parceler.Parcels;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements MainView {
 
   private static final String LIST_STATE_KEY = "listState";
   private static final String PHOTO_LIST = "photoList";
-
-  private static final int PHOTO_AMOUNT = 20;
 
   @Bind(R.id.coordinatorLayout) CoordinatorLayout coordinatorLayout;
   @Bind(R.id.galleryRecyclerView) RecyclerView mRecyclerView;
@@ -47,7 +44,7 @@ public class MainActivity extends BaseActivity {
   private Parcelable mListState;
   private String keyWords;
 
-  private SearchPresenter presenter;
+  private MainPresenter presenter;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -57,16 +54,18 @@ public class MainActivity extends BaseActivity {
 
     setSupportActionBar(toolbar);
 
+    presenter = new MainPresenterImpl(this);
+
     if (!CheckNetworkConnection.isConnectionAvailable(getApplicationContext())) {
-      showSnackBarWithStringResource(R.string.no_connection);
+      presenter.showSnackBar(R.string.no_connection);
     }
 
-    presenter = new SearchPresenterImpl();
+    keyWords = mStorageHelper.getPrefKeyWords();
 
     /** Load some photos by amount */
     if (savedInstanceState == null) {
       photoList = new ArrayList<>();
-      loadPhotoByKeyWordsFromPref();
+      presenter.onCreate(keyWords);
     } else {
       /** Restore photos*/
       photoList = Parcels.unwrap(savedInstanceState.getParcelable(PHOTO_LIST));
@@ -116,27 +115,14 @@ public class MainActivity extends BaseActivity {
           @Override public void onLoadMore(int page, int totalItemsCount) {
             // If connection available load photos by amount
             if (CheckNetworkConnection.isConnectionAvailable(getApplicationContext())) {
-              loadPhotosByAmount(PHOTO_AMOUNT);
-              mGalleryRecyclerViewAdapter.notifyItemRangeChanged(photoList.size(), PHOTO_AMOUNT);
+              presenter.addRandomPhotosToPhotoList(keyWords);
             }
           }
         });
   }
 
   @OnClick(R.id.fab) void onClickFAB() {
-    showInputDialog();
-  }
-
-  /**
-   * Load photos by specific amount
-   *
-   * @param amount of photos to be loaded.
-   */
-  private void loadPhotosByAmount(int amount) {
-
-    for (int i = 0; i < amount; i++) {
-      photoList.add(presenter.getRandomPhoto(keyWords));
-    }
+    presenter.showInputDialog(keyWords);
   }
 
   @Override protected void onResume() {
@@ -164,47 +150,47 @@ public class MainActivity extends BaseActivity {
    *
    * @param resId of String.
    */
-  private void showSnackBarWithStringResource(int resId) {
+  @Override public void showSnackBarWithStringResource(int resId) {
     Snackbar snackbar = Snackbar.make(coordinatorLayout, resId, Snackbar.LENGTH_LONG);
     snackbar.show();
   }
 
-  private void showInputDialog() {
+  @Override
+  public void showInputDialog(String lastUserInput, MaterialDialog.InputCallback inputCallback) {
 
     new MaterialDialog.Builder(this).title(R.string.input)
         .content(R.string.input_content)
         .inputRange(2, 32)
         .inputType(InputType.TYPE_CLASS_TEXT)
-        .input(getString(R.string.input_hint), presenter.restoreUserInputFormat(keyWords),
-            new MaterialDialog.InputCallback() {
-              @Override public void onInput(MaterialDialog dialog, CharSequence input) {
-                String keyWords = presenter.getValidateFormat(input.toString());
-
-                loadPhotoByKeyWordsFromUserInput(keyWords);
-              }
-            })
+        .input(getString(R.string.input_hint), lastUserInput, inputCallback)
         .show();
   }
 
-  private void loadPhotoByKeyWordsFromPref() {
-    keyWords = mStorageHelper.getPrefKeyWords();
-    if (TextUtils.isEmpty(keyWords)) {
-      showInputDialog();
-    } else {
-      loadPhotosByAmount(PHOTO_AMOUNT);
+  @Override public void loadPhotoByKeyWordsFromUserInput(String keyWords) {
+
+    if (!mStorageHelper.getPrefKeyWords().equalsIgnoreCase(keyWords)) {
+
+      this.keyWords = keyWords;
+      mStorageHelper.setPrefKeyWords(keyWords);
+
+      presenter.setRandomPhotosToPhotoList(keyWords);
+      mLayoutManager.scrollToPosition(0);
     }
   }
 
-  private void loadPhotoByKeyWordsFromUserInput(String keyWords) {
+  @Override public void clearPhotoList() {
+    photoList.clear();
+  }
 
-    if (!mStorageHelper.getPrefKeyWords().equalsIgnoreCase(keyWords)) {
-      mStorageHelper.setPrefKeyWords(keyWords);
-      this.keyWords = keyWords;
+  @Override public void onRecyclerViewRangeChanged(int itemCount) {
+    mGalleryRecyclerViewAdapter.notifyItemRangeChanged(photoList.size(), itemCount);
+  }
 
-      photoList.clear();
-      loadPhotosByAmount(PHOTO_AMOUNT);
-      mGalleryRecyclerViewAdapter.notifyDataSetChanged();
-      mLayoutManager.scrollToPosition(0);
-    }
+  @Override public void onRecyclerViewSetChanged() {
+    mGalleryRecyclerViewAdapter.notifyDataSetChanged();
+  }
+
+  @Override public void addRandomPhotoToPhotoList(Photo photo) {
+    photoList.add(photo);
   }
 }
