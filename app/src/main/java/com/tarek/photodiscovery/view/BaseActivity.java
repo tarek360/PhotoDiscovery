@@ -1,4 +1,4 @@
-package com.tarek.photodiscovery.view.main;
+package com.tarek.photodiscovery.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +12,8 @@ import javax.inject.Inject;
  */
 public class BaseActivity extends AppCompatActivity {
 
-  @Inject Navigator mNavigator;
-  @Inject StorageHelper mStorageHelper;
+  @Inject public Navigator mNavigator;
+  @Inject public StorageHelper mStorageHelper;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

@@ -1,5 +1,6 @@
 package com.tarek.photodiscovery.di.modules;
 
+import android.support.annotation.NonNull;
 import com.tarek.photodiscovery.App;
 import com.tarek.photodiscovery.navigation.Navigator;
 import dagger.Module;
@@ -11,13 +12,13 @@ import javax.inject.Singleton;
  */
 @Module public class AppModule {
 
-  private final App app;
+  @NonNull private final App app;
 
-  public AppModule(App app) {
+  public AppModule(@NonNull App app) {
     this.app = app;
   }
 
-  @Singleton @Provides public App providesApp() {
+  @NonNull @Singleton @Provides public App providesApp() {
     return app;
   }
 

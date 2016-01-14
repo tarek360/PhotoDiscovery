@@ -21,6 +21,7 @@ import com.tarek.photodiscovery.adapters.GalleryRecyclerViewAdapter;
 import com.tarek.photodiscovery.adapters.RecyclerItemClickListener;
 import com.tarek.photodiscovery.models.Photo;
 import com.tarek.photodiscovery.utils.CheckNetworkConnection;
+import com.tarek.photodiscovery.view.BaseActivity;
 import java.util.ArrayList;
 import org.parceler.Parcels;
 

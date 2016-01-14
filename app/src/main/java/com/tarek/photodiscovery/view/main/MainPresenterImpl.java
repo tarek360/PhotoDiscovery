@@ -1,6 +1,7 @@
 package com.tarek.photodiscovery.view.main;
 
 import android.text.TextUtils;
+import android.util.Log;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tarek.photodiscovery.models.Photo;
 
@@ -67,11 +68,14 @@ public class MainPresenterImpl implements MainPresenter, MaterialDialog.InputCal
   }
 
   // Initial photo width & height
-  private static int width = 400;
+  private final static int width = 400;
   private static int height = 550;
 
   // int variable is used to increment photo height by one pixel.
   private static int step;
+  private final static String endPoint = "http://loremflickr.com/";
+
+  private final static StringBuilder randomURL= new StringBuilder(endPoint);
 
   /**
    * Returns Random Photo with every call.
@@ -81,8 +85,9 @@ public class MainPresenterImpl implements MainPresenter, MaterialDialog.InputCal
    */
   private Photo getRandomPhoto(String keyWords) {
 
-    //StringBuilder randomURL = new StringBuilder("http://lorempixel.com/");
-    StringBuilder randomURL = new StringBuilder("http://loremflickr.com/");
+    //Clear the StringBuilder to the endpoint
+    randomURL.setLength(endPoint.length());
+    randomURL.trimToSize(); // trim the underlying buffer
 
     // Set it to start
     if (step == 49) {
@@ -103,6 +108,7 @@ public class MainPresenterImpl implements MainPresenter, MaterialDialog.InputCal
     randomURL.append(keyWords);
     randomURL.append("/all");
 
+    Log.d("frfrfrf","randomURL"+randomURL.toString());
     return new Photo(randomURL.toString(), width, height);
   }
 

@@ -7,7 +7,6 @@ import com.tarek.photodiscovery.utils.StorageHelper;
 import com.tarek.photodiscovery.utils.StorageHelperImpl;
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -15,14 +14,11 @@ import javax.inject.Singleton;
  */
 @Module public class StorageModule {
 
-  @Singleton @Provides SharedPreferences provideSharedPreferences(App app) {
+  @Provides @Singleton SharedPreferences provideSharedPreferences(App app) {
     return PreferenceManager.getDefaultSharedPreferences(app);
   }
 
-
-  @Provides
-  @Singleton StorageHelper provideStorageHelper(SharedPreferences sharedPreferences) {
+  @Provides @Singleton StorageHelper provideStorageHelper(SharedPreferences sharedPreferences) {
     return new StorageHelperImpl(sharedPreferences);
   }
-
 }
