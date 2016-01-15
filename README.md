@@ -35,7 +35,7 @@ Thanks to these libraries:
 
 ## Why this project is open sourced?
 
-I've open sourced it for beginners and any android developer want to know how to use the above libraries in one real app.
+I've open sourced it for beginners and any android developer want to know how to use the above libraries and how to use MVP (Model View Presenter) in one real app.
 
 
 ## License
