@@ -4,8 +4,9 @@
 [![](http://s25.postimg.org/l7tmfhxy7/get_it_on_google_play.jpg)](https://play.google.com/store/apps/details?id=com.tarek.photodiscovery)
 
 ## ScreenShots
-![](https://lh3.googleusercontent.com/LKwrHYZJAJUlgNBgo2ph-jWqBcofQgOYCRZF6LziwWYKI_9mB5JOCh0gqzzudAf8o4E=h310-rw)
-![](https://lh3.googleusercontent.com/SlJOfHmzjhadlVv4oQvpiOrXGWUjf2nQLg8m71ZiLqzpi2EPac9NP_ZpY7mzaekTcg=h310-rw)
+![](https://github.com/tarek360/PhotoDiscovery/raw/master/screenshots/1.png)
+![](https://github.com/tarek360/PhotoDiscovery/raw/master/screenshots/2.png)
+![](https://github.com/tarek360/PhotoDiscovery/raw/master/screenshots/3.png)
 
 
 ## Description
