@@ -17,9 +17,9 @@ You can enter single keyword or multiple keywords.
 
 ## Notes:
 
-* Photos is random and It belongs to its owner.
-* Photos is supported by loremflickr.com API.
-* Photos is refer to user generated content.
+* Photos are random and It belongs to its owner.
+* Photos are supported by loremflickr.com API.
+* Photos are refer to user generated content.
 
 ## Libraries
 Thanks to these libraries:
@@ -33,8 +33,7 @@ Thanks to these libraries:
 - Parceler (https://github.com/johncarl81/parceler)
 - Dagger 2 (https://github.com/google/dagger/)
 
-## Libraries
-Why this project is open sourced?
+## Why this project is open sourced?
 
 I've open sourced it for beginners and any android developer want to know how to use the above libraries in one real app.
 
