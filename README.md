@@ -4,9 +4,9 @@
 [![](http://s25.postimg.org/l7tmfhxy7/get_it_on_google_play.jpg)](https://play.google.com/store/apps/details?id=com.tarek.photodiscovery)
 
 ## ScreenShots
-![](https://github.com/tarek360/PhotoDiscovery/raw/master/screenshots/1.png)
-![](https://github.com/tarek360/PhotoDiscovery/raw/master/screenshots/2.png)
-![](https://github.com/tarek360/PhotoDiscovery/raw/master/screenshots/3.png)
+<img src="https://github.com/tarek360/PhotoDiscovery/raw/master/screenshots/1.png" width="200">
+<img src="https://github.com/tarek360/PhotoDiscovery/raw/master/screenshots/2.png" width="200">
+<img src="https://github.com/tarek360/PhotoDiscovery/raw/master/screenshots/3.png" width="200">
 
 
 ## Description
