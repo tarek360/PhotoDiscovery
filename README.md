@@ -22,7 +22,7 @@ You can enter single keyword or multiple keywords.
 * Photos is refer to user generated content.
 
 ## Libraries
-Thanks to these Libraries:
+Thanks to these libraries:
 
 - AppCompat (https://developer.android.com/tools/support-library/features.html)
 - Design (https://developer.android.com/tools/support-library/features.html)
@@ -32,6 +32,11 @@ Thanks to these Libraries:
 - Butter Knife (http://jakewharton.github.io/butterknife/)
 - Parceler (https://github.com/johncarl81/parceler)
 - Dagger 2 (https://github.com/google/dagger/)
+
+## Libraries
+Why this project is open sourced?
+
+I've open sourced it for beginners and any android developer want to know how to use the above libraries in one real app.
 
 
 ## License
